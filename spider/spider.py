@@ -77,3 +77,33 @@ import pandas as pd
 engine = create_engine('mysql+pymysql://root:031716@localhost/db_test')
 df = pd.read_csv('二手房.csv')
 df.to_sql(name='second',con=engine,index=False,if_exists='replace')
+
+
+
+import jieba
+from wordcloud import WordCloud
+
+# 假设 df['标题'] 已经被正确加载
+houseHot = df['标题'].values.tolist()
+Hotstr = ' '.join(houseHot)
+jieba_text = " ".join(jieba.lcut(Hotstr))
+stopwords = ['品牌', '环境', '向', '住', '适合', '业主', '宽', '公司', '好', '小区']
+
+wc = WordCloud(
+    scale=5,
+    margin=0,
+    background_color="black",
+    max_words=1200,
+    width=800,
+    height=450,
+    font_path='C:\\Users\\lenovo\\Desktop\\优设标题黑.ttf',
+    stopwords=stopwords,
+    random_state=800
+)
+
+wc.generate_from_text(jieba_text)
+wc.to_file('词云图.png')
+# 显示生成的词云图
+image = wc.to_image()
+image.show()
+
